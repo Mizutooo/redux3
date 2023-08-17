@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodo, deleteTodo } from './utils/actions';
 
 function App() {
+  const [todo, setTodo] = useState('');
+  const dispatch = useDispatch();
+  const todos = useSelector(state => state.todos);
+
+  const handleAddTodo = () => {
+    if (todo.trim() !== '') {
+      dispatch(addTodo(todo));
+      setTodo('');
+    }
+  };
+
+  const handleDeleteTodo = (id) => {
+    dispatch(deleteTodo(id));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <input type="text" onChange={(e) => setTodo(e.target.value)} value={todo} />
+        <button onClick={handleAddTodo}>Add</button>
+      </div>
+
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {todo.title}
+            <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
